@@ -1,0 +1,17 @@
+{
+  "name": "backend-project-46",
+  "version": "1.0.0",
+  "description": "[![Actions Status](https://github.com/Ilya-Solo/backend-project-46/workflows/hexlet-check/badge.svg)](https://github.com/Ilya-Solo/backend-project-46/actions)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "gendiff": "gendiff.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "commander": "^11.0.0"
+  }
+}
