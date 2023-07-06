@@ -37,3 +37,4 @@ const gendiff = (path1, path2) => {
 
     return `{\n${result}}`;
 }
+export default gendiff;
