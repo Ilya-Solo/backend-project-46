@@ -4,7 +4,7 @@ const digWithFormating = (object, keys) => {
   const value = keys.reduce((acc, key) => acc[key], object);
   if (value instanceof Object) {
     return '[complex value]';
-  } else if (typeof value === 'string') {
+  } if (typeof value === 'string') {
     return `'${value}'`;
   }
 
@@ -34,5 +34,5 @@ const format = (data1, data2, systemisedObj) => {
   return plainFormatter(systemisedObj).join('\n');
 };
 
-console.log()
+console.log();
 export default format;

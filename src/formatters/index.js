@@ -1,7 +1,7 @@
 import stylishedFormat from './stylish.js';
 import plainFormat from './plain.js';
 
-const getFormattedData = (data1, data2, systemisedObj, formatType = 'json') => {
+const getFormattedData = (data1, data2, systemisedObj, formatType) => {
   let result;
   switch (formatType) {
     case 'stylish':
