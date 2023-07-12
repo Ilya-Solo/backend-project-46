@@ -1,44 +1,42 @@
 import _ from 'lodash';
 
-const tab = '    ';
+const tab = ' ';
 
-const beautifyOutput = (data, depth = 0) => {
-  if (!(data instanceof Object)) {
-    return `${data}`;
+const render = (value, depth, stringify) => {
+  if (!_.isObject(value)) {
+    return value;
   }
-
-  const result = Object.entries(data).reduce((acc, [key, value]) => {
-    const newValue = (value instanceof Object) ? beautifyOutput(value, depth + 1) : value;
-    return `${acc}${tab.repeat(depth)}    ${key}: ${newValue}\n`;
-  }, '');
-
-  return `{\n${result}${tab.repeat(depth)}}`;
+  const newDepth = depth + 1;
+  const convertObjectToString = ([key, objectValue]) => `${stringify(key, render(objectValue, newDepth, stringify), newDepth, ' ')}`;
+  return `{\n${(Object.entries(value).map(convertObjectToString)).join('\n')}\n${tab.repeat((newDepth * 4))}}`;
 };
+const stringify = (key, value, depth, sign) => `${tab.repeat(depth * 4)}  ${sign} ${key}: ${render(value, depth, stringify)}`;
 
-const format = (data1, data2, systemisedObj, depth = 0) => {
-  const output = _.sortBy(Object.entries(systemisedObj), ([key]) => key)
-    .reduce((acc, [key, state]) => {
-      let res;
-      switch (state) {
-        case 'added':
-          res = `${acc}${tab.repeat(depth)}  + ${key}: ${beautifyOutput(data2[key], depth + 1)}\n`;
-          break;
-        case 'deleted':
-          res = `${acc}${tab.repeat(depth)}  - ${key}: ${beautifyOutput(data1[key], depth + 1)}\n`;
-          break;
-        case 'changed':
-          res = `${acc}${tab.repeat(depth)}  - ${key}: ${beautifyOutput(data1[key], depth + 1)}\n${tab.repeat(depth)}  + ${key}: ${beautifyOutput(data2[key], depth + 1)}\n`;
-          break;
-        case 'unchanged':
-          res = `${acc}${tab.repeat(depth)}    ${key}: ${beautifyOutput(data1[key], depth + 1)}\n`;
-          break;
-        default:
-          res = `${acc}${tab.repeat(depth)}    ${key}: ${format(data1[key], data2[key], systemisedObj[key], depth + 1)}`;
-      }
-      return res;
-    }, '');
+const mapping = {
 
-  return `{\n${output}${tab.repeat(depth)}}\n`;
+  unchanged: (obj, depth) => stringify(obj.key, obj.value1, depth, ' '),
+  removed: (obj, depth) => stringify(obj.key, obj.value1, depth, '-'),
+  added: (obj, depth) => stringify(obj.key, obj.value2, depth, '+'),
+  changed: (obj, depth) => [
+    stringify(obj.key, obj.value1, depth, '-'),
+    stringify(obj.key, obj.value2, depth, '+'),
+  ],
+  nested: (obj, depth, innerFormat) => stringify(
+    obj.key,
+    innerFormat(obj.value1, depth + 1),
+    depth,
+    ' ',
+  ),
+};
+const format = (diffTree) => {
+  const innerFormat = (innerDiffTree, depth) => {
+    const strings = innerDiffTree
+      .flatMap((obj) => mapping[obj.type](obj, depth, innerFormat));
+    const framedStrigs = ['{', ...strings, `${tab.repeat(depth * 4)}}`];
+    return framedStrigs.join('\n');
+  };
+
+  return innerFormat(diffTree, 0);
 };
 
 export default format;

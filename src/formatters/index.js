@@ -1,17 +1,17 @@
 import stylishedFormat from './stylish.js';
 import plainFormat from './plain.js';
 
-const getFormattedData = (data1, data2, systemisedObj, formatType) => {
+const getFormattedData = (diffTree, formatType) => {
   let result;
   switch (formatType) {
     case 'stylish':
-      result = stylishedFormat(data1, data2, systemisedObj);
+      result = stylishedFormat(diffTree);
       break;
     case 'plain':
-      result = plainFormat(data1, data2, systemisedObj);
+      result = plainFormat(diffTree);
       break;
     case 'json':
-      result = JSON.stringify(systemisedObj);
+      result = JSON.stringify(diffTree);
       break;
     default:
       Error(`Format ${formatType} is not supported`);
