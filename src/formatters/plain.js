@@ -1,38 +1,38 @@
 import _ from 'lodash';
 
-const digWithFormating = (object, keys) => {
-  const value = keys.reduce((acc, key) => acc[key], object);
-  if (value instanceof Object) {
-    return '[complex value]';
-  } if (typeof value === 'string') {
+const processedValue = (value) => {
+  if (typeof value === 'string') {
     return `'${value}'`;
   }
-
+  if (_.isObject(value)) {
+    return '[complex value]';
+  }
   return value;
 };
 
-const format = (data1, data2, systemisedObj) => {
-  const plainFormatter = (_systemisedObj, keyPath = []) => {
-    const output = _.sortBy(Object.entries(_systemisedObj), ([key]) => key)
-      .flatMap(([key, state]) => {
-        const currentKeyPath = [...keyPath, key];
-        switch (state) {
-          case 'changed':
-            return `Property '${currentKeyPath.join('.')}' was updated. From ${digWithFormating(data1, currentKeyPath)} to ${digWithFormating(data2, currentKeyPath)}`;
-          case 'added':
-            return `Property '${currentKeyPath.join('.')}' was added with value: ${digWithFormating(data2, currentKeyPath)}`;
-          case 'deleted':
-            return `Property '${currentKeyPath.join('.')}' was removed`;
-          case 'unchanged':
-            return [];
-          default:
-            return plainFormatter(_systemisedObj[key], currentKeyPath);
-        }
-      });
-    return output;
-  };
-  return plainFormatter(systemisedObj).join('\n');
+const mapping = {
+  unchanged: () => '',
+  removed: (property) => `Property '${property}' was removed`,
+  added: (property, obj) => `Property '${property}' was added with value: ${processedValue(obj.value2)}`,
+  changed: (property, obj) => `Property '${property}' was updated. From ${processedValue(obj.value1)} to ${processedValue(obj.value2)}`,
+  nested: (property, obj, innerFormat) => innerFormat(obj.value1, property),
 };
 
-console.log();
+const removeEmptyStrings = (string) => string !== '';
+
+const format = (diffTree) => {
+  const innerFormat = (diff, path) => {
+    const callback = (obj) => {
+      const { key, type } = obj;
+      const property = path ? `${path}.${key}` : key;
+
+      return mapping[type](property, obj, innerFormat);
+    };
+
+    return diff.map(callback).filter(removeEmptyStrings).join('\n');
+  };
+
+  return innerFormat(diffTree, '');
+};
+
 export default format;
