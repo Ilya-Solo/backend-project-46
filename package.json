@@ -1,0 +1,35 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "Compares two configuration files and shows a difference.",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ilka228/frontend-project-lvl2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ilka228/frontend-project-lvl2/issues"
+  },
+  "homepage": "https://github.com/Ilka228/frontend-project-lvl2#readme",
+  "dependencies": {
+    "@jest/globals": "^27.5.1",
+    "commander": "^8.3.0",
+    "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21"
+  },
+  "bin": {
+    "gendiff": "bin/gendiff.js"
+  },
+  "type": "module",
+  "devDependencies": {
+    "eslint": "^8.10.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
+    "jest": "^27.5.1"
+  }
+}
