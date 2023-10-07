@@ -1,1 +1,0 @@
-{"common":{"setting1":"unchanged","setting2":"deleted","setting3":"changed","setting6":{"key":"unchanged","doge":{"wow":"changed"},"ops":"added"},"follow":"added","setting4":"added","setting5":"added"},"group1":{"baz":"changed","foo":"unchanged","nest":"changed"},"group2":"deleted","group3":"added"}
